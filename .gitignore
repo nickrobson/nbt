@@ -1,0 +1,11 @@
+/target/
+/out/
+/.settings/
+/.metadata/
+/.prefs/
+/.classpath
+/.project
+
+*.iml
+*.class
+*.jar
