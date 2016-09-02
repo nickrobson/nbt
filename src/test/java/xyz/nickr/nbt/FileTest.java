@@ -1,4 +1,4 @@
-package xyz.nickr.nbt.test;
+package xyz.nickr.nbt;
 
 import java.io.BufferedInputStream;
 import java.io.File;

@@ -1,4 +1,4 @@
-package xyz.nickr.nbt.test;
+package xyz.nickr.nbt;
 
 import static org.junit.Assert.assertEquals;
 
@@ -6,18 +6,18 @@ import org.junit.Test;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import xyz.nickr.nbt.tags.LongTag;
+import xyz.nickr.nbt.tags.IntTag;
 
-public class LongTagTest {
+public class IntTagTest {
 
     @Test
-    public void testLongTag() {
-        long test = Integer.MAX_VALUE;
+    public void testIntTag() {
+        int test = 1000000;
 
-        LongTag b = new LongTag(test);
-        b.setName("long");
+        IntTag b = new IntTag(test);
+        b.setName("int");
 
-        ByteBuf buf = Unpooled.buffer().clear();
+        ByteBuf buf = Unpooled.buffer();
         b.write(buf);
         buf.readByte(); // discard id
         b.read(buf);
