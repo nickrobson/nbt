@@ -1,5 +1,7 @@
 package xyz.nickr.nbt.tags;
 
+import io.netty.buffer.ByteBuf;
+
 import java.io.PrintStream;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -10,8 +12,6 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Objects;
 import java.util.Optional;
-
-import io.netty.buffer.ByteBuf;
 
 /**
  * The building blocks of NBT, an NBTTag is a container for data.
@@ -57,6 +57,9 @@ public abstract class NBTTag {
      * Sets this tag's name.
      *
      * @param name The name.
+     * @param <T> The type of NBT tag.
+     *
+     * @return This tag.
      */
     @SuppressWarnings("unchecked")
     public final <T extends NBTTag> T setName(String name) {
@@ -72,6 +75,9 @@ public abstract class NBTTag {
      * Reads data into this tag from the given buffer with the given byte order.
      *
      * @param buf The buffer to read from.
+     * @param <T> The type of NBT tag.
+     *
+     * @return This tag.
      */
     @SuppressWarnings("unchecked")
     public final <T extends NBTTag> T read(ByteBuf buf) {
@@ -89,6 +95,9 @@ public abstract class NBTTag {
      * Writes data from this tag into the given buffer with the given byte order.
      *
      * @param buf The buffer to write to.
+     * @param <T> The type of NBT tag.
+     *
+     * @return This tag.
      */
     @SuppressWarnings("unchecked")
     public final <T extends NBTTag> T write(ByteBuf buf) {
@@ -290,7 +299,6 @@ public abstract class NBTTag {
      * Reads a string.
      *
      * @param buf The buffer to read from.
-     * @param endian The byte order.
      *
      * @return The string.
      */
@@ -304,7 +312,6 @@ public abstract class NBTTag {
      * Writes a string.
      *
      * @param buf The buffer to write to.
-     * @param endian The byte order.
      * @param string The string.
      */
     public static void writeString(ByteBuf buf, String string) {
