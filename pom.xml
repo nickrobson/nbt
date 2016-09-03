@@ -8,6 +8,29 @@
     <description>A Java library for manipulating files in the NBT format.</description>
     <url>http://github.com/nickrobson/nbt/</url>
 
+    <scm>
+        <connection>scm:git:git://github.com/nickrobson/nbt.git</connection>
+        <developerConnection>scm:git:ssh://github.com:nickrobson/nbt.git</developerConnection>
+        <url>http://github.com/nickrobson/nbt/tree/master</url>
+    </scm>
+
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>http://www.opensource.org/licenses/mit-license.php</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Nick Robson</name>
+            <email>robsonnicholas1@gmail.com</email>
+            <url>https://github.com/nickrobson</url>
+            <id>nickrobson</id>
+        </developer>
+    </developers>
+
 	<dependencies>
 		<dependency>
 			<groupId>io.netty</groupId>
