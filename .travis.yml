@@ -1,0 +1,8 @@
+language: java
+install: true
+sudo: false
+matrix:
+  include:
+  - jdk: oraclejdk8
+after_success:
+  - mvn clean install coveralls:report --settings ./travis/settings.xml
