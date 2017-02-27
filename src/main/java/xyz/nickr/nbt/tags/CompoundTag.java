@@ -6,8 +6,8 @@ import java.nio.ByteOrder;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -24,7 +24,7 @@ import xyz.nickr.nbt.tags.NBTTag.NBTTagType;
 @NBTTagType(10)
 public class CompoundTag extends NBTTag implements Iterable<NBTTag> {
 
-    private Map<String, NBTTag> elements = new HashMap<>();
+    private Map<String, NBTTag> elements = new LinkedHashMap<>();
 
     CompoundTag() {}
 
@@ -314,7 +314,7 @@ public class CompoundTag extends NBTTag implements Iterable<NBTTag> {
      * @param tags The tags.
      */
     public void set(Map<String, NBTTag> tags) {
-        this.elements = Objects.requireNonNull(tags, "tags list cannot be null");
+        this.elements = new LinkedHashMap<>(Objects.requireNonNull(tags, "tags list cannot be null"));
     }
 
     @Override
