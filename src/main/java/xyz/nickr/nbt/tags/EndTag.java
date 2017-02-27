@@ -1,8 +1,8 @@
 package xyz.nickr.nbt.tags;
 
-import java.io.PrintStream;
-
 import io.netty.buffer.ByteBuf;
+import java.io.PrintStream;
+import java.nio.ByteOrder;
 import xyz.nickr.nbt.tags.NBTTag.NBTTagType;
 
 /**
@@ -18,10 +18,10 @@ public class EndTag extends NBTTag {
     }
 
     @Override
-    public void _read(ByteBuf buffer) {}
+    public void _read(ByteBuf buffer, ByteOrder order) {}
 
     @Override
-    public void _write(ByteBuf buffer) {}
+    public void _write(ByteBuf buffer, ByteOrder order) {}
 
     @Override
     protected void _print(PrintStream stream, String indent) {}

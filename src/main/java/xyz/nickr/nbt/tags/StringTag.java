@@ -1,9 +1,9 @@
 package xyz.nickr.nbt.tags;
 
-import java.io.PrintStream;
-import java.util.Objects;
-
 import io.netty.buffer.ByteBuf;
+import java.io.PrintStream;
+import java.nio.ByteOrder;
+import java.util.Objects;
 import xyz.nickr.nbt.tags.NBTTag.NBTTagType;
 
 /**
@@ -46,15 +46,15 @@ public class StringTag extends NBTTag {
     }
 
     @Override
-    public void _read(ByteBuf buf) {
-        this.payload = readString(buf);
+    public void _read(ByteBuf buf, ByteOrder order) {
+        this.payload = readString(buf, order);
     }
 
     @Override
-    public void _write(ByteBuf buf) {
+    public void _write(ByteBuf buf, ByteOrder order) {
         if (payload == null)
             throw new IllegalStateException("string tag is missing value");
-        writeString(buf, payload);
+        writeString(buf, order, payload);
     }
 
     @Override

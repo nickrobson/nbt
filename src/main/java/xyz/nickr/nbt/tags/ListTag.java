@@ -1,6 +1,8 @@
 package xyz.nickr.nbt.tags;
 
+import io.netty.buffer.ByteBuf;
 import java.io.PrintStream;
+import java.nio.ByteOrder;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
@@ -9,8 +11,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Spliterator;
 import java.util.Spliterators;
-
-import io.netty.buffer.ByteBuf;
 import xyz.nickr.nbt.NBTCodec;
 import xyz.nickr.nbt.tags.NBTTag.NBTTagType;
 
@@ -299,27 +299,36 @@ public class ListTag extends NBTTag implements Iterable<NBTTag> {
     }
 
     @Override
-    public void _read(ByteBuf buf) {
+    public void _read(ByteBuf buf, ByteOrder order) {
         elements.clear();
         type = buf.readByte();
-        int length = buf.readInt();
+        int length;
+        if (order == ByteOrder.BIG_ENDIAN) {
+            length = buf.readInt();
+        } else {
+            length = buf.readIntLE();
+        }
         while (length-- > 0) {
             NBTTag tag = NBTCodec.createTag(type);
             tag.setWriteType(false);
             tag.setHasName(false);
-            tag.read(buf);
+            tag.read(buf, order);
             elements.add(tag);
         }
     }
 
     @Override
-    public void _write(ByteBuf buf) {
+    public void _write(ByteBuf buf, ByteOrder order) {
         buf.writeByte(type);
-        buf.writeInt(elements.size());
+        if (order == ByteOrder.BIG_ENDIAN) {
+            buf.writeInt(elements.size());
+        } else {
+            buf.writeIntLE(elements.size());
+        }
         for (NBTTag tag : elements) {
             tag.setWriteType(false);
             tag.setHasName(false);
-            tag.write(buf);
+            tag.write(buf, order);
         }
     }
 

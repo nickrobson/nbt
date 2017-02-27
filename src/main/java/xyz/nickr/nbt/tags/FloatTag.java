@@ -1,8 +1,8 @@
 package xyz.nickr.nbt.tags;
 
-import java.io.PrintStream;
-
 import io.netty.buffer.ByteBuf;
+import java.io.PrintStream;
+import java.nio.ByteOrder;
 import xyz.nickr.nbt.tags.NBTTag.NBTTagType;
 
 /**
@@ -55,12 +55,12 @@ public class FloatTag extends NumberTag {
     }
 
     @Override
-    public void _read(ByteBuf buf) {
+    public void _read(ByteBuf buf, ByteOrder order) {
         this.payload = buf.readFloat();
     }
 
     @Override
-    public void _write(ByteBuf buf) {
+    public void _write(ByteBuf buf, ByteOrder order) {
         buf.writeFloat(payload);
     }
 

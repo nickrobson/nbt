@@ -1,9 +1,9 @@
 package xyz.nickr.nbt.tags;
 
-import java.io.PrintStream;
-import java.util.Objects;
-
 import io.netty.buffer.ByteBuf;
+import java.io.PrintStream;
+import java.nio.ByteOrder;
+import java.util.Objects;
 import xyz.nickr.nbt.tags.NBTTag.NBTTagType;
 
 /**
@@ -46,20 +46,33 @@ public class IntArrayTag extends NBTTag {
     }
 
     @Override
-    public void _read(ByteBuf buf) {
-        int len = buf.readInt();
-        this.payload = new int[len];
-        for (int i = 0; i < len; i++)
-            payload[i] = buf.readInt();
+    public void _read(ByteBuf buf, ByteOrder order) {
+        if (order == ByteOrder.BIG_ENDIAN) {
+            int len = buf.readInt();
+            this.payload = new int[len];
+            for (int i = 0; i < len; i++)
+                this.payload[i] = buf.readInt();
+        } else {
+            int len = buf.readIntLE();
+            this.payload = new int[len];
+            for (int i = 0; i < len; i++)
+                this.payload[i] = buf.readIntLE();
+        }
     }
 
     @Override
-    public void _write(ByteBuf buf) {
+    public void _write(ByteBuf buf, ByteOrder order) {
         if (payload == null)
             throw new IllegalStateException("int array tag is missing value");
-        buf.writeInt(payload.length);
-        for (int i = 0, j = payload.length; i < j; i++)
-            buf.writeInt(payload[i]);
+        if (order == ByteOrder.BIG_ENDIAN) {
+            buf.writeInt(payload.length);
+            for (int i : payload)
+                buf.writeInt(i);
+        } else {
+            buf.writeIntLE(payload.length);
+            for (int i : payload)
+                buf.writeIntLE(i);
+        }
     }
 
     @Override

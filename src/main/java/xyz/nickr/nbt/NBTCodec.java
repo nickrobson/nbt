@@ -1,5 +1,7 @@
 package xyz.nickr.nbt;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -10,9 +12,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import xyz.nickr.nbt.tags.NBTTag;
 import xyz.nickr.nbt.tags.NBTTag.NBTTagType;
 
@@ -80,10 +79,9 @@ public class NBTCodec {
     public NBTTag decode(ByteBuf buf, NBTCompression compression) {
         if (compression != null)
             buf = compression.extract(buf);
-        buf = buf.order(order);
         byte type = buf.readByte();
         NBTTag tag = createTag(type);
-        tag.read(buf);
+        tag.read(buf, order);
         return tag;
     }
 
@@ -120,7 +118,7 @@ public class NBTCodec {
      */
     public void encode(ByteBuf buf, NBTTag tag, NBTCompression compression) {
         ByteBuf tmp = Unpooled.buffer();
-        tag.write(tmp);
+        tag.write(tmp, order);
         if (compression != null)
             tmp = compression.compress(tmp);
         buf.writeBytes(tmp);
@@ -135,7 +133,7 @@ public class NBTCodec {
      */
     public void encode(OutputStream out, NBTTag tag, NBTCompression compression) {
         ByteBuf tmp = Unpooled.buffer();
-        tag.write(tmp);
+        tag.write(tmp, order);
         if (compression != null)
             tmp = compression.compress(tmp);
         try {

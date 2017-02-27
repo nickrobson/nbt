@@ -2,6 +2,7 @@ package xyz.nickr.nbt;
 
 import static org.junit.Assert.assertEquals;
 
+import java.nio.ByteOrder;
 import org.junit.Test;
 
 import io.netty.buffer.ByteBuf;
@@ -18,10 +19,12 @@ public class ShortTagTest {
         b.setName("short");
 
         ByteBuf buf = Unpooled.buffer().clear();
-        b.write(buf);
-        buf.readByte(); // discard id
-        b.read(buf);
-        assertEquals(test, b.get());
+        for (ByteOrder order : new ByteOrder[]{ByteOrder.BIG_ENDIAN, ByteOrder.LITTLE_ENDIAN}) {
+            b.write(buf, order);
+            buf.readByte(); // discard id
+            b.read(buf, order);
+            assertEquals(test, b.get());
+        }
     }
 
 }

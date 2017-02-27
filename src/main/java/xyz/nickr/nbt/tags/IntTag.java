@@ -1,8 +1,8 @@
 package xyz.nickr.nbt.tags;
 
-import java.io.PrintStream;
-
 import io.netty.buffer.ByteBuf;
+import java.io.PrintStream;
+import java.nio.ByteOrder;
 import xyz.nickr.nbt.tags.NBTTag.NBTTagType;
 
 /**
@@ -55,13 +55,21 @@ public class IntTag extends NumberTag {
     }
 
     @Override
-    public void _read(ByteBuf buf) {
-        this.payload = buf.readInt();
+    public void _read(ByteBuf buf, ByteOrder order) {
+        if (order == ByteOrder.BIG_ENDIAN) {
+            this.payload = buf.readInt();
+        } else {
+            this.payload = buf.readIntLE();
+        }
     }
 
     @Override
-    public void _write(ByteBuf buf) {
-        buf.writeInt(payload);
+    public void _write(ByteBuf buf, ByteOrder order) {
+        if (order == ByteOrder.BIG_ENDIAN) {
+            buf.writeInt(payload);
+        } else {
+            buf.writeIntLE(payload);
+        }
     }
 
     @Override

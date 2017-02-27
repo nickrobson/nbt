@@ -1,12 +1,12 @@
 package xyz.nickr.nbt.tags;
 
 import io.netty.buffer.ByteBuf;
-
 import java.io.PrintStream;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -80,10 +80,10 @@ public abstract class NBTTag {
      * @return This tag.
      */
     @SuppressWarnings("unchecked")
-    public final <T extends NBTTag> T read(ByteBuf buf) {
+    public final <T extends NBTTag> T read(ByteBuf buf, ByteOrder order) {
         if (hasName)
-            setName(readString(buf));
-        _read(buf);
+            setName(readString(buf, order));
+        _read(buf, order);
         try {
             return (T) this;
         } catch (ClassCastException ex) {
@@ -100,13 +100,12 @@ public abstract class NBTTag {
      * @return This tag.
      */
     @SuppressWarnings("unchecked")
-    public final <T extends NBTTag> T write(ByteBuf buf) {
+    public final <T extends NBTTag> T write(ByteBuf buf, ByteOrder order) {
          Optional<String> name = getName();
          if (writeType)
              buf.writeByte(getTypeId());
-         if (name.isPresent())
-             writeString(buf, name.get());
-         _write(buf);
+         name.ifPresent(s -> writeString(buf, order, s));
+         _write(buf, order);
          try {
              return (T) this;
          } catch (ClassCastException ex) {
@@ -291,9 +290,9 @@ public abstract class NBTTag {
 
     protected abstract void _print(PrintStream stream, String indent);
 
-    protected abstract void _read(ByteBuf buf);
+    protected abstract void _read(ByteBuf buf, ByteOrder order);
 
-    protected abstract void _write(ByteBuf buf);
+    protected abstract void _write(ByteBuf buf, ByteOrder order);
 
     /**
      * Reads a string.
@@ -302,8 +301,14 @@ public abstract class NBTTag {
      *
      * @return The string.
      */
-    public static String readString(ByteBuf buf) {
-        byte[] bytes = new byte[buf.readUnsignedShort()];
+    public static String readString(ByteBuf buf, ByteOrder order) {
+        int len;
+        if (order == ByteOrder.BIG_ENDIAN) {
+            len = buf.readUnsignedShort();
+        } else {
+            len = buf.readUnsignedShortLE();
+        }
+        byte[] bytes = new byte[len];
         buf.readBytes(bytes);
         return new String(bytes, StandardCharsets.UTF_8);
     }
@@ -314,8 +319,12 @@ public abstract class NBTTag {
      * @param buf The buffer to write to.
      * @param string The string.
      */
-    public static void writeString(ByteBuf buf, String string) {
-        buf.writeShort(string.length());
+    public static void writeString(ByteBuf buf, ByteOrder order, String string) {
+        if (order == ByteOrder.BIG_ENDIAN) {
+            buf.writeShort(string.length());
+        } else {
+            buf.writeShortLE(string.length());
+        }
         buf.writeBytes(string.getBytes(StandardCharsets.UTF_8));
     }
 

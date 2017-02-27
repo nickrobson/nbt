@@ -1,6 +1,8 @@
 package xyz.nickr.nbt.tags;
 
+import io.netty.buffer.ByteBuf;
 import java.io.PrintStream;
+import java.nio.ByteOrder;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -11,8 +13,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Spliterator;
 import java.util.Spliterators;
-
-import io.netty.buffer.ByteBuf;
 import xyz.nickr.nbt.NBTCodec;
 import xyz.nickr.nbt.tags.NBTTag.NBTTagType;
 
@@ -318,23 +318,23 @@ public class CompoundTag extends NBTTag implements Iterable<NBTTag> {
     }
 
     @Override
-    public void _read(ByteBuf buf) {
+    public void _read(ByteBuf buf, ByteOrder order) {
         byte type;
         while ((type = buf.readByte()) != 0) {
             NBTTag tag = NBTCodec.createTag(type);
             tag.setWriteType(true);
             tag.setHasName(true);
-            tag.read(buf);
+            tag.read(buf, order);
             add(tag);
         }
     }
 
     @Override
-    public void _write(ByteBuf buf) {
+    public void _write(ByteBuf buf, ByteOrder order) {
         for (NBTTag tag : this) {
             tag.setWriteType(true);
             tag.setHasName(true);
-            tag.write(buf);
+            tag.write(buf, order);
         }
         buf.writeByte(0);
     }
