@@ -20,7 +20,7 @@ This library is on [Maven Central](http://repo1.maven.org/maven2/xyz/nickr/nbt/)
     <dependency>
         <groupId>xyz.nickr</groupId>
         <artifactId>nbt</artifactId>
-        <version>1.0.1</version>
+        <version>1.1.1</version>
     </dependency>
     ...
 </dependencies>
